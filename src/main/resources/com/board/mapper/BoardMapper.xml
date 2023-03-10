@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.board.mapper.BoardMapper">
+
+	<sql id="searchCondition">
+		<where>
+			<foreach collection="typeCollection" item="t">
+				<choose>
+					<when test="t=='T'.toString()">
+						bTitle LIKE CONCAT('%', #{keyword}, '%')
+					</when>
+					<when test="t=='C'.toString()">
+						bContent LIKE CONCAT('%', #{keyword}, '%')
+					</when>
+					<when test="t=='I'.toString()">
+						bId LIKE CONCAT('%', #{keyword}, '%')
+					</when>
+				</choose>
+			</foreach>
+		</where>
+	</sql>
+	
+	<!-- 전체 게시물 조회 -->
+	<select id="getList" resultType="com.board.domain.BoardDTO">
+		SELECT bId
+			 , bTitle
+			 , bContent
+			 , bCreatedAt
+			 , bModifiedAt
+			 , bCount
+			 , (SELECT count(no)
+			 	  FROM tb_like l
+			 	 WHERE l.bbs_id = b.bId) AS 'like'
+		 FROM bboard b
+		<include refid="searchCondition" />
+	 	ORDER BY bId
+	 	 DESC
+		LIMIT #{start}
+			, #{amount}
+	</select>
+
+	<!-- 전체 개시물 개수 조회 -->
+	<select id="totalCount" resultType="int">
+		SELECT count(bId) 
+			FROM bboard
+		<include refid="searchCondition" />
+	</select>
+
+	<!-- 개시물 조회 -->
+	<select id="getBoard" resultType="com.board.domain.BoardDTO">
+		SELECT bId
+			 , bTitle
+			 , bContent
+			 , bCount
+			 , DATE_FORMAT(bCreatedAt, '%Y-%m-%d') as 'bCreatedAt'
+			 , DATE_FORMAT(bModifiedAt, '%Y-%m-%d') as 'bModifiedAt'
+			 , (SELECT count(no)
+			 	  FROM tb_like)  AS 'like'
+		  FROM bboard
+		 WHERE bId = #{bId};
+	</select>
+	
+	<!-- 게시물 조회수 -->
+	<update id="readCount">
+		UPDATE bboard 
+			SET bCount = bCount+1 
+		WHERE bId = #{bId}
+	</update>
+
+	<!-- 게시물 등록 -->
+	<insert id="insert">
+		INSERT 
+			INTO bboard(bTitle, bContent) 
+		VALUES(#{bTitle}, #{bContent})
+	</insert>
+	
+	<!-- 게시물 수정 -->
+	<update id="update">
+		UPDATE bboard 
+		   SET bTitle = #{bTitle}
+			 , bContent = #{bContent}
+			 , bModifiedAt = now() 
+		WHERE bId = #{bId}
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete">
+		DELETE 
+		  FROM bboard 
+		 WHERE bId=#{bId}
+	</delete>
+	
+	<insert id="regLike">
+		INSERT INTO tb_like (
+			bbs_id
+		  	, ip
+		) VALUES (
+			#{bbs_id}
+			, #{ip}
+		)
+	</insert>
+	
+	<delete id="delLike">
+		DELETE
+		  FROM tb_like
+		 WHERE bbs_id = #{bbs_id}
+		   AND ip = #{ip} 
+	</delete>
+	
+	<select id="getLike" resultType="String">
+		SELECT ip 
+		  FROM tb_like
+		 WHERE bbs_id = #{bbs_id}
+		   AND ip = #{ip}
+	</select>
+</mapper>

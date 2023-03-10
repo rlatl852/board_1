@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.board.mapper.BoardMapper">
+
+	<!-- 전체 게시물 조회 -->
+	<select id="getList"
+		resultType="com.board.domain.BoardDTO">
+		select * from board.bboard
+		order by bId desc limit #{start},
+		#{amount}
+	</select>
+
+	<!-- 전체 개시물 개수 조회 -->
+	<select id="totalCount" resultType="int">
+		select count(bId) from
+		bboard
+	</select>
+
+	<!-- 개시물 조회 -->
+	<select id="getBoard"
+		resultType="com.board.domain.BoardDTO">
+		select * from bboard where bId = #{bId}
+	</select>
+	
+	<!-- 게시물 조회수 -->
+	<update id="readCount">
+		update bboard set bCount = bCount+1 where bId = #{bId}
+	</update>
+
+	<!-- 게시물 등록 -->
+	<insert id="insert">
+		<selectKey keyProperty="bno" order="AFTER" resultType="int">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into board_tbl(bTitle, bContent)
+		values(#{bTitle}, #{bContent})
+	</insert>
+	
+	<!-- 게시물 수정 -->
+	<update id="update">
+		update bboard set bTitle = #{bTitle}, bContent = #{bContent} where bId = #{bId}
+		<selectKey keyProperty="bno" order="AFTER" resultType="int">
+			select #{bId}
+		</selectKey>
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete">
+		delete from bboard where bId=#{bId}
+	</delete>
+	
+</mapper>

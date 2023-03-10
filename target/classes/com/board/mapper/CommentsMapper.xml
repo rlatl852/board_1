@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommentDAO">
+
+	<!-- 전체 댓글 조회 -->
+	<select id="commentsList" resultType="com.board.domain.CommentDTO">
+		SELECT comment_id, bbs_id, content, DATE_FORMAT(crt_dt, '%Y-%m-%d') as 'crt_dt', DATE_FORMAT(update_dt, '%Y-%m-%d') as 'update_dt'
+			FROM tb_comment
+		WHERE bbs_id = #{bbs_id}
+			ORDER BY comment_id DESC
+		LIMIT #{page.start}, #{page.amount}
+	</select>
+	
+	<select id="totalCount" resultType="int">
+		SELECT COUNT(*) 
+			FROM tb_comment
+		WHERE bbs_id = #{bbs_id}
+	</select>
+	
+	<!-- 댓글 조회 -->
+	<select id="getComment" resultType="com.board.domain.CommentDTO">
+		SELECT comment_id, bbs_id, content, DATE_FORMAT(crt_dt, '%Y-%m-%d') AS 'crt_dt', DATE_FORMAT(update_dt, '%Y-%m-%d') AS 'update_dt'
+			FROM tb_comment
+		WHERE comment_id = #{comment_id}
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="insert">
+		INSERT
+			INTO tb_comment(bbs_id, content)
+		VALUES(#{bbs_id}, #{content})
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="delete">
+		DELETE
+			FROM tb_comment
+		WHERE comment_id = #{comment_id}
+	</delete>
+	
+	<!-- 댓글 수정 -->
+	<update id="update">
+		UPDATE tb_comment
+			SET content = #{content}, update_dt = now()
+		WHERE comment_id = #{comment_id}
+	</update>
+</mapper>
