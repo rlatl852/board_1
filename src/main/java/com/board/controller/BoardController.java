@@ -4,7 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,43 +23,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.board.domain.BoardDTO;
-import com.board.domain.Page;
 import com.board.service.BoardService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j;
 
 @Controller
-@RequestMapping("/Board")
+@RequestMapping("/sw")
 @Log4j
 public class BoardController {
 
 	@Resource(name = "BoardService")
 	private BoardService boardService;
-
-	// 게시물 목록
-	@GetMapping("/list")
-//	public String list(@ModelAttribute VueBoard vueBoard, Model model) throws Exception {
-	public String boardList(Model model, Page page) throws Exception {
-		ObjectMapper om = new ObjectMapper();
-		model.addAttribute("readAll", om.writeValueAsString(boardService.readAll(page)));
-		model.addAttribute("page", om.writeValueAsString(new Page(boardService.totalCount(page), page)));
-
-		return "board/boardList";
+	
+	@RequestMapping("boardList")
+	public String boardList() throws Exception {
+		return "sw/board/boardList.tiles";
 	}
-
-	@PostMapping("/list")
-	public ResponseEntity<Map<String, Object>> boardList(@RequestBody Page page) throws Exception {
-		List<BoardDTO> readAll = boardService.readAll(page);
-		Page pages = new Page(boardService.totalCount(page), page);
-
-		Map<String, Object> map = new HashMap<>();
-
-		map.put("readAll", readAll);
-		map.put("page", pages);
-
-		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-	}
+//
+//	// 게시물 목록
+//	@GetMapping("/list")
+////	public String list(@ModelAttribute VueBoard vueBoard, Model model) throws Exception {
+//	public String boardList(Model model, Page page) throws Exception {
+//		ObjectMapper om = new ObjectMapper();
+//		model.addAttribute("readAll", om.writeValueAsString(boardService.readAll(page)));
+//		model.addAttribute("page", om.writeValueAsString(new Page(boardService.totalCount(page), page)));
+//
+//		return "board/boardList";
+//	}
+//
+//	@PostMapping("/list")
+//	public ResponseEntity<Map<String, Object>> boardList(@RequestBody Page page) throws Exception {
+//		List<BoardDTO> readAll = boardService.readAll(page);
+//		Page pages = new Page(boardService.totalCount(page), page);
+//
+//		Map<String, Object> map = new HashMap<>();
+//
+//		map.put("readAll", readAll);
+//		map.put("page", pages);
+//
+//		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+//	}
 
 	// 게시물 조회 페이지로 이동
 	@GetMapping("/content")
