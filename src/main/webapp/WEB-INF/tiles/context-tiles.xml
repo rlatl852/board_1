@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+ 
+
+<tiles-definitions>
+    <!-- 통계정보관 타일즈 -->
+    <definition name="stats-tiles"			template="/WEB-INF/views/tiles/tiles-layout.jsp">
+    	<put-attribute name="loadFile"		value="/WEB-INF/views/tiles/loadFile.jsp" />
+    	<put-attribute name="header"		value="/WEB-INF/views/tiles/header.jsp" />
+    	<put-attribute name="body"			value="" />
+    	<put-attribute name="footer"		value="/WEB-INF/views/tiles/footer.jsp" />
+    </definition>
+    
+    <definition name="sw/board/*.tiles" extends="stats-tiles">
+        <put-attribute name="body" value="/WEB-INF/views/board/{1}.jsp" />
+    </definition>
+ 
+</tiles-definitions>
