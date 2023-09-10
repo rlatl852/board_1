@@ -7,7 +7,7 @@
 <body>
 	<h1>Hello world!</h1>
 
-	<h4><a href="${contextPath}/Board/list">게시판</a></h4>
+	<h4><a href="${contextPath}/sw/boardList">게시판</a></h4>
 	
 	<h1>${time }</h1>
 </body>
