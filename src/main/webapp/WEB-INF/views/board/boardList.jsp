@@ -3,5 +3,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath" value="${pageContext.request.contextPath }"></c:set>
 <div>
-	<h1>게시판</h1>
+	<h1>게시판(수정)</h1>
 </div>
